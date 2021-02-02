@@ -1,0 +1,16 @@
+/* CETEIcean rules */
+tei-l:before {
+    content: attr(n);
+    display: inline;
+    padding-right: 10px;
+    color: darkgray;
+}
+
+tei-l {
+    display: block;
+    margin-left: 100px;
+}
+
+tei-note {
+    display: none;
+}
