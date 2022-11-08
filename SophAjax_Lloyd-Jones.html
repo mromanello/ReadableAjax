@@ -8,11 +8,40 @@
     <script src="lib/CETEI.js" charset="utf-8"></script>
   
    <script type="text/javascript">
-     (new CETEI).getHTML5('https://raw.githubusercontent.com/gregorycrane/Wolf1807/master/ajax-2019/ajax-lj.xml', function(data) {
-       document.getElementsByTagName("body")[0].appendChild(data);
-     });
+
+      // copy path to the selected text range into the user's clipboard 
+      function copyRangeSelection(){
+        var selectedRange  = document.querySelector('#text-path-input').value;
+        var textAnchor  = document.querySelector('#text-anchor').value;
+        var url = document.querySelector('#document-source').getAttribute('href');
+        navigator.clipboard.writeText(`{"url" : "${url}", "selector" : "${selectedRange}", "textAnchor": "${textAnchor}"}`);
+      }
+
+      // fetch TEI/XML data and display as html by using CETEIcean 
+      var CETEIcean = new CETEI()
+      var teiFilePath = 'https://raw.githubusercontent.com/gregorycrane/Wolf1807/master/ajax-2019/ajax-lj.xml'
+      
+      CETEIcean.getHTML5(teiFilePath, function(data) {
+        document.getElementsByTagName("body")[0].appendChild(data);
+        document.addEventListener('selectionchange', function(event){
+          var sel = document.getSelection();
+          var startLineNumber = sel.anchorNode.parentElement.getAttribute('n');
+          var endLineNumber = sel.focusNode.parentElement.getAttribute('n');
+          var startOffset = sel.anchorOffset;
+          var endOffset = sel.focusOffset;
+          var selectedText = sel.toString();
+          var rangeStart = `${sel.anchorNode.parentElement.tagName.toLowerCase()}@n=${startLineNumber}[${startOffset}]`;
+          var rangeEnd = `${sel.focusNode.parentElement.tagName.toLowerCase()}@n=${endLineNumber}[${endOffset}]`;
+          //var range = `${rangeStart}:${rangeEnd} \t ${selectedText}`;
+          var range = `${rangeStart}:${rangeEnd}`;
+          document.querySelector('#text-path-input').value = range;
+          document.querySelector('#text-anchor').value = selectedText;
+        })  
+      })
+
    </script>
       <script type="text/javascript">
+    /*
     document.addEventListener("DOMContentLoaded", function(event) {
       import ("https://cdn.jsdelivr.net/npm/alpheios-embedded@latest/dist/alpheios-embedded.min.js").then(embedLib => {
 
@@ -32,7 +61,7 @@
         console.error(`Import of Alpheios Embedded Library failed: ${e}`)
       })
     });
-
+    */
    </script>
     <style>
 
@@ -41,6 +70,11 @@
   </head>
   <body class="alpheios-enabled" lang="grc">
     <h1 data-alpheios-ignore="all">Sophocles <i>Ajax</i>, ed. Lloyd-Jones (Oxford, 1994)</h1>
-    <p data-alpheios-ignore="all">The TEI/XML edition of the critical text established by Lloyd-Jones displayed below was created by Gregory Crane, and is dynamically pulled from <a href="https://raw.githubusercontent.com/gregorycrane/Wolf1807/master/ajax-2019/ajax-lj.xml">GitHub</a>.</p>
+    <p data-alpheios-ignore="all">The TEI/XML edition of the critical text established by Lloyd-Jones displayed below was created by Gregory Crane, and is dynamically pulled from <a id="document-source" href="https://raw.githubusercontent.com/gregorycrane/Wolf1807/master/ajax-2019/ajax-lj.xml">GitHub</a>.</p>
+    <p id="text-path" style="position: fixed; right: 100px;">
+      <input id="text-path-input" value="Line range">
+      <input id="text-anchor" style="display: none" value="...">
+      <button onclick="copyRangeSelection()">Copy to 📋</button>
+    </p>
   </body>
 </html>
