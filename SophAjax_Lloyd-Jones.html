@@ -51,7 +51,7 @@
           var endLineNumber = sel.focusNode.parentElement.getAttribute('n');
           var startOffset = sel.anchorOffset;
           var endOffset = sel.focusOffset;
-          var selectedText = sel.toString();
+          var selectedText = sel.toString().trim();
           var rangeStart = `${sel.anchorNode.parentElement.tagName.toLowerCase()}@n=${startLineNumber}[${startOffset}]`;
           var rangeEnd = `${sel.focusNode.parentElement.tagName.toLowerCase()}@n=${endLineNumber}[${endOffset}]`;
           //var range = `${rangeStart}:${rangeEnd} \t ${selectedText}`;
