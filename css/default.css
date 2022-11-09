@@ -6,6 +6,12 @@ tei-l:before {
     color: darkgray;
 }
 
+tei-speaker:before {
+    content: attr(name);
+    display: inline;
+    font-weight: bold;
+}
+
 tei-l {
     display: block;
     margin-left: 100px;

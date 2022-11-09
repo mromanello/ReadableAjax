@@ -20,6 +20,28 @@
       // fetch TEI/XML data and display as html by using CETEIcean 
       var CETEIcean = new CETEI()
       var teiFilePath = 'https://raw.githubusercontent.com/gregorycrane/Wolf1807/master/ajax-2019/ajax-lj.xml'
+      let behaviors = {
+        // workaround to display the speaker's name in a way that it
+        // does not get copied as text when using the text linking tool.
+        // the function does not return anything as we are simply modifying
+        // the default behaviour 
+        "tei": {
+          "speaker": function(e){
+            e.setAttribute('name', e.innerHTML);
+            e.innerHTML = "";
+            return;
+          },
+          // workaround to insert a space when two consecutive lines of text
+          // are selected using the text linking tool 
+          "l": function(e) {
+            e.innerHTML = e.innerHTML + "&nbsp;";
+            return;
+          }
+          
+        }
+      };
+
+      CETEIcean.addBehaviors(behaviors);
       
       CETEIcean.getHTML5(teiFilePath, function(data) {
         document.getElementsByTagName("body")[0].appendChild(data);
